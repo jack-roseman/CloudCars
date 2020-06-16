@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="/socket.io/socket.io.js"></script>
   <script src="databaseops.js"></script>
 </head>
 <body onload="loadContent()">
@@ -21,13 +20,6 @@
     <input type="button" id="toggleBtn" value="Show Vehicles" style="display: inline-block;" onclick="toggleVehicles()">
     <div id="vehicles" hidden="true" style="padding-top: 15px;"></div>
     <!-- END View Registered Vehicles -->
-  </div>
-
-  <div id="ImageResponse" style="display: block;">
-    <p id="connectionStatus"></p>
-    <img id="img">
-    <input type="button" id="cleanBtn" value="Clean"/>
-    <input type="button" id="dirtyBtn" value="Dirty"/>
   </div>
 </body>
 

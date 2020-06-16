@@ -1,7 +1,5 @@
 const express = require('express')
 const app = express()
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
 const PORT = 3000
 const HOST = 'localhost'
 var mongoose = require('mongoose');
@@ -14,7 +12,6 @@ const connectionOptions = {
 	useNewUrlParser: true
 }
 
-
 // set up BodyParser
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -23,13 +20,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // set up EJS
 app.set('view engine', 'ejs');
 app.use('/public', express.static('public'));
-
-io.on('connection', function(socket) {
-    io.sockets.emit('newclientconnect', { status: "connected"});
-    socket.on('disconnect', function () {
-        io.sockets.emit('newclientconnect',{ status: "disconnected"});
-    });
-});
 
 app.get('/', (req, res) => {
     res.redirect('/public/databaseops.html');
@@ -74,12 +64,11 @@ app.get('/vehicles', (req, res) => {
 	})
 })
 
-app.post('/classify/:id', (req, res) => {
-    const base64img = req.body.img
-    io.sockets.emit('classificationTask', { img: base64img});
-})
+app.post('/classify', (req, res) => {
+    //classify image as dirty or clean
+});
 
-http.listen(PORT, () => {
+app.listen(PORT, () => {
     mongoose.connect(connectionString, connectionOptions).then(() => {
         console.log("Server connected to MongoDB")
     })

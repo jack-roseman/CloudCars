@@ -48,9 +48,3 @@ function toggleVehicles() {
         vehiclesDisplay.hidden = false
     }
 }
-
-var socket = io();
-socket.on('newclientconnect',function(data) {
-    var status = document.getElementById("connectionStatus")
-    status.innerText = `Connection Status: ${data.status}`
-});
