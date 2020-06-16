@@ -6,7 +6,6 @@ var mongoose = require('mongoose');
 const AutonomousVehicle = require('./api/models/autonomousVehicle.js');
 
 // set up database
-const MongoClient = require('mongodb').MongoClient;
 const connectionString = "mongodb+srv://jroseman:Poland33@cloudcars-tmsbt.gcp.mongodb.net/CloudCars?retryWrites=true&w=majority";
 const connectionOptions = {
 	useUnifiedTopology: true,
@@ -46,6 +45,22 @@ app.post('/vehicles/register/:provider/:make/:model/:year', (req, res) => {
         })
     });
 });
+
+app.get('/vehicles', (req, res) => {
+    AutonomousVehicle.find().exec().then(vehicles => {
+		if (vehicles){
+			console.log(vehicles);
+			res.status(200).json(vehicles);
+		} else {
+			res.status(404).json({
+				message: "No vehicles found"
+			})
+		}
+	}).catch(err => {
+		res.json({message: "No user found"});
+		console.log(err);
+	})
+})
 
 app.listen(PORT, () => {
     mongoose.connect(connectionString, connectionOptions).then(() => {

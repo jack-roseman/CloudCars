@@ -19,7 +19,6 @@
   "homepage": "https://github.com/jack-roseman/CloudCars#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "mongodb": "^3.5.9",
     "mongoose": "^5.9.19"
   },
   "devDependencies": {

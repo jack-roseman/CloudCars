@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
-
-<body>
+<header>
   <script src="databaseops.js"></script>
+</header>
+
+<body onload="loadContent()">
   <!-- BEGIN Registering a vehicle -->
   <p>Register New Autonomous Vehicle:</p>
   <form onsubmit="registerVehicle()">
@@ -12,7 +14,12 @@
     <input type= "text" id="year" placeholder="Year" required/>
     <input type="submit">
   </form>
+  <p id="registerErr" style="display: inline-block;"></p>
   <!-- END Registering a vehicle -->
+
+  <!-- BEGIN View Registered Vehicles -->
+  <p id="vehicles"></p>
+  <!-- END View Registered Vehicles -->
 </body>
 
 </html>
