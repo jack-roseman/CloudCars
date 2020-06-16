@@ -1,25 +1,34 @@
 <!DOCTYPE html>
 <html>
-<header>
+<head>
+  <script src="/socket.io/socket.io.js"></script>
   <script src="databaseops.js"></script>
-</header>
-
+</head>
 <body onload="loadContent()">
-  <!-- BEGIN Registering a vehicle -->
-  <p>Register New Autonomous Vehicle:</p>
-  <form onsubmit="registerVehicle()">
-    <input type= "text" id="provider" placeholder="Provider" required/>
-    <input type= "text" id="make" placeholder="Make" required/>
-    <input type= "text" id="model" placeholder="Model" required/>
-    <input type= "text" id="year" placeholder="Year" required/>
-    <input type="submit">
-  </form>
-  <p id="registerErr" style="display: inline-block;"></p>
-  <!-- END Registering a vehicle -->
+  <div>
+    <!-- BEGIN Registering a vehicle -->
+    <p>Register New Autonomous Vehicle:</p>
+    <form onsubmit="registerVehicle()" style="display: inline-block;">
+      <input type= "text" id="provider" placeholder="Provider" required/>
+      <input type= "text" id="make" placeholder="Make" required/>
+      <input type= "text" id="model" placeholder="Model" required/>
+      <input type= "text" id="year" placeholder="Year" required/>
+      <input type="submit">
+    </form>
+    <!-- END Registering a vehicle -->
 
-  <!-- BEGIN View Registered Vehicles -->
-  <p id="vehicles"></p>
-  <!-- END View Registered Vehicles -->
+    <!-- BEGIN View Registered Vehicles -->
+    <input type="button" id="toggleBtn" value="Show Vehicles" style="display: inline-block;" onclick="toggleVehicles()">
+    <div id="vehicles" hidden="true" style="padding-top: 15px;"></div>
+    <!-- END View Registered Vehicles -->
+  </div>
+
+  <div id="ImageResponse" style="display: block;">
+    <p id="connectionStatus"></p>
+    <img id="img">
+    <input type="button" id="cleanBtn" value="Clean"/>
+    <input type="button" id="dirtyBtn" value="Dirty"/>
+  </div>
 </body>
 
 </html>

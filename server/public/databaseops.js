@@ -1,15 +1,14 @@
 
 function loadContent() {
     var vehiclesDisplay = document.getElementById("vehicles")
-    var xhttp = new XMLHttpRequest();
-    xhttp.open("GET", "http://localhost:3000/vehicles", true);
+    var xhttp = new XMLHttpRequest()
+    xhttp.responseType = 'json'
+    xhttp.open("GET", "http://localhost:3000/vehicles", true)
     xhttp.onreadystatechange = function () {
-      if (this.readyState == 4) {
-        var myArr = JSON.parse(this.responseText);
-        var count = 1;
-        myArr.forEach(function(vehicle) {
-            console.log(vehicle)
-            vehiclesDisplay.innerHTML += `  ID: ${vehicle._id} <br />
+      if (this.readyState == 4 && this.status == 200) {
+        var vehicles = xhttp.response.vehicles
+        vehicles.forEach(function(vehicle) {
+            vehiclesDisplay.innerHTML +=   `ID: ${vehicle._id} <br />
                                             PROVIDER: ${vehicle.provider} <br />
                                             MAKE: ${vehicle.make} <br />
                                             MODEL: ${vehicle.model} <br />
@@ -18,7 +17,6 @@ function loadContent() {
                                             LAST ADDRESS: ${vehicle.lastKnownAddress} <br />
                                             LAST IMAGE: ${vehicle.lastImageSent} <br />
                                             <br />`;
-            count ++;
         });
       }
     }
@@ -26,13 +24,33 @@ function loadContent() {
   }
 
 function registerVehicle() {
-    const provider = document.getElementById("provider").value;
-    const make = document.getElementById("make").value;
-    const model = document.getElementById("model").value;
-    const year = document.getElementById("year").value;
-
-    var url = `http://localhost:3000/vehicles/register/${provider}/${make}/${model}/${year}`;
+    var json = {
+        provider: document.getElementById("provider").value,
+        make: document.getElementById("make").value,
+        model: document.getElementById("model").value,
+        year: document.getElementById("year").value
+    }
     var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", url, true);
-    xhttp.send(); 
+    xhttp.open("POST", "http://localhost:3000/vehicles/register", false);
+    xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.send(JSON.stringify(json));
 }
+
+
+function toggleVehicles() {
+    var toggleButton = document.getElementById("toggleBtn")
+    var vehiclesDisplay = document.getElementById("vehicles")
+    if (!vehiclesDisplay.hidden) {
+        toggleButton.value = "Show Vehicles"
+        vehiclesDisplay.hidden = true
+    } else if (vehiclesDisplay.hidden) {
+        toggleButton.value = "Hide Vehicles"
+        vehiclesDisplay.hidden = false
+    }
+}
+
+var socket = io();
+socket.on('newclientconnect',function(data) {
+    var status = document.getElementById("connectionStatus")
+    status.innerText = `Connection Status: ${data.status}`
+});

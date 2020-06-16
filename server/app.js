@@ -1,5 +1,7 @@
 const express = require('express')
 const app = express()
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 const PORT = 3000
 const HOST = 'localhost'
 var mongoose = require('mongoose');
@@ -12,6 +14,7 @@ const connectionOptions = {
 	useNewUrlParser: true
 }
 
+
 // set up BodyParser
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
@@ -21,21 +24,28 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use('/public', express.static('public'));
 
+io.on('connection', function(socket) {
+    io.sockets.emit('newclientconnect', { status: "connected"});
+    socket.on('disconnect', function () {
+        io.sockets.emit('newclientconnect',{ status: "disconnected"});
+    });
+});
+
 app.get('/', (req, res) => {
     res.redirect('/public/databaseops.html');
 })
 
-app.post('/vehicles/register/:provider/:make/:model/:year', (req, res) => {
+app.post('/vehicles/register', (req, res) => {
     var vehicle = new AutonomousVehicle({
 		_id: new mongoose.Types.ObjectId(),
-		provider: req.params.provider,
-        make: req.params.make,
-        model: req.params.model,
-        year: req.params.year
+		provider: req.body.provider,
+        make: req.body.make,
+        model: req.body.model,
+        year: req.body.year
     })
     vehicle.save().then(result => {
         res.status(201).json({
-            message: "POST request to /registerVehicle",
+            message: "POST request to /vehicles/register",
             createdVehicle: vehicle
         });
     }).catch(err => {
@@ -49,20 +59,27 @@ app.post('/vehicles/register/:provider/:make/:model/:year', (req, res) => {
 app.get('/vehicles', (req, res) => {
     AutonomousVehicle.find().exec().then(vehicles => {
 		if (vehicles){
-			console.log(vehicles);
-			res.status(200).json(vehicles);
+			res.status(200).json({
+                message: "GET request to /vehicles",
+                vehicles: vehicles
+            });
 		} else {
 			res.status(404).json({
 				message: "No vehicles found"
 			})
 		}
 	}).catch(err => {
-		res.json({message: "No user found"});
+		res.json({message: "Something Went Wrong"});
 		console.log(err);
 	})
 })
 
-app.listen(PORT, () => {
+app.post('/classify/:id', (req, res) => {
+    const base64img = req.body.img
+    io.sockets.emit('classificationTask', { img: base64img});
+})
+
+http.listen(PORT, () => {
     mongoose.connect(connectionString, connectionOptions).then(() => {
         console.log("Server connected to MongoDB")
     })
