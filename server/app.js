@@ -3,7 +3,7 @@ const app = express()
 const PORT = 3000
 const HOST = 'localhost'
 var mongoose = require('mongoose');
-const AutonomousVehicle = require('./api/models/autonomousVehicle.js');
+const Vehicle = require('./api/models/Vehicle.js');
 
 // set up database
 const connectionString = "mongodb+srv://jroseman:Poland33@cloudcars-tmsbt.gcp.mongodb.net/CloudCars?retryWrites=true&w=majority";
@@ -14,6 +14,7 @@ const connectionOptions = {
 
 // set up BodyParser
 var bodyParser = require('body-parser');
+const Partner = require('./api/models/Partner.js');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -26,9 +27,9 @@ app.get('/', (req, res) => {
 })
 
 app.post('/vehicles/register', (req, res) => {
-    var vehicle = new AutonomousVehicle({
+    var vehicle = new Vehicle({
 		_id: new mongoose.Types.ObjectId(),
-		provider: req.body.provider,
+		owner: req.body.owner,
         make: req.body.make,
         model: req.body.model,
         year: req.body.year
@@ -47,7 +48,7 @@ app.post('/vehicles/register', (req, res) => {
 });
 
 app.get('/vehicles', (req, res) => {
-    AutonomousVehicle.find().exec().then(vehicles => {
+    Vehicle.find().exec().then(vehicles => {
 		if (vehicles){
 			res.status(200).json({
                 message: "GET request to /vehicles",
@@ -64,9 +65,50 @@ app.get('/vehicles', (req, res) => {
 	})
 })
 
-app.post('/classify', (req, res) => {
-    //classify image as dirty or clean
+app.post('/partners/register', (req, res) => {
+    var partner = new Partner({
+		_id: new mongoose.Types.ObjectId(),
+        name: req.body.name,
+        address : {
+            number: req.body.number,
+            street: req.body.street,
+            city: req.body.city,
+            state: req.body.state,
+            zip: req.body.zip
+        },
+        services: req.body.services,
+        numberOfEmployees: req.body.numEmployees,
+    })
+    partner.save().then(result => {
+        res.status(201).json({
+            message: "POST request to /partners/register",
+            createdPartner: partner
+        });
+    }).catch(err => {
+        console.log(err)
+        res.status(400).json({
+            message: "Connection to MongoDB failed"
+        })
+    });
 });
+
+app.get('/partners', (req, res) => {
+    Partner.find().exec().then(partners => {
+		if (partners){
+			res.status(200).json({
+                message: "GET request to /partners",
+                partners: partners
+            });
+		} else {
+			res.status(404).json({
+				message: "No partners found"
+			})
+		}
+	}).catch(err => {
+		res.json({message: "Something Went Wrong"});
+		console.log(err);
+	})
+})
 
 app.listen(PORT, () => {
     mongoose.connect(connectionString, connectionOptions).then(() => {
