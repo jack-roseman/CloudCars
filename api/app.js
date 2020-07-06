@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 3000
-const HOST = 'localhost'
 var mongoose = require('mongoose');
 const Vehicle = require('./api/models/Vehicle.js');
 
@@ -115,5 +114,4 @@ app.listen(PORT, () => {
         console.log("Server connected to MongoDB")
     })
     // mongoose.disconnect()
-    console.log(`Example app listening at http://${HOST}:${PORT}`)
 })
