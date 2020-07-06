@@ -1,9 +1,10 @@
+const url = window.location.origin;
 
 function loadContent() {
     var vehiclesDisplay = document.getElementById("vehicles")
     var xhttp1 = new XMLHttpRequest()
     xhttp1.responseType = 'json'
-    xhttp1.open("GET", "http://localhost:3000/vehicles", true)
+    xhttp1.open("GET", `${url}/vehicles`, true)
     xhttp1.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         var vehicles = this.response.vehicles
@@ -35,7 +36,7 @@ function loadContent() {
     var partnersDisplay = document.getElementById("partners")
     var xhttp2 = new XMLHttpRequest()
     xhttp2.responseType = 'json'
-    xhttp2.open("GET", "http://localhost:3000/partners", true)
+    xhttp2.open("GET", `${url}/partners`, true)
     xhttp2.onreadystatechange = function () {
       if (this.readyState == 4 && this.status == 200) {
         var partners = this.response.partners
@@ -70,7 +71,7 @@ function registerVehicle() {
         year: document.getElementById("year").value,
     }
     var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", "http://localhost:3000/vehicles/register", false);
+    xhttp.open("POST", `${url}/vehicles/register`, false);
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.send(JSON.stringify(json));
 }
@@ -92,7 +93,7 @@ function registerPartner() {
   }
   
   var xhttp = new XMLHttpRequest();
-  xhttp.open("POST", "http://localhost:3000/partners/register", false);
+  xhttp.open("POST", `${url}/partners/register`, false);
   xhttp.setRequestHeader('Content-Type', 'application/json');
   xhttp.send(JSON.stringify(json));
 }
