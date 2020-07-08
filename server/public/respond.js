@@ -10,8 +10,8 @@ socket.on('classify', (data) => {
 })
 
 $(document).ready(() => {
-    $('#clean_btn').on('click', classify('clean')); 
-    $('#dirty_btn').on('click', classify('dirty'));
+    $('#clean_btn').on('click', () => classify('clean')); 
+    $('#dirty_btn').on('click', () => classify('dirty'));
 });
 
 function classify(cl) {
@@ -19,6 +19,6 @@ function classify(cl) {
         imgUrl:  $("#classify_image").attr('src'),
         label: cl
     });
-    $('#classify_image').attr('src', '')
-    $("#classify-div").hide()
+    $('#classify_image').attr('src', '');
+    $("#classify-div").hide();
 }
