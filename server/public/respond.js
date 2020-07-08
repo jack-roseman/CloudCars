@@ -1,7 +1,14 @@
 var socket = io();
 
-socket.on('connected', () => {
-    $("#connection_status").html("Status: <b>Connected</b>")
+socket.on('connected', (connectionState) => {
+    const numResponders = connectionState.numResponders;
+    $("#connection_status").html(`Status: <b>Connected</b> => ${numResponders} responders online`)
+    socket.emit('connected_ack'); 
+})
+
+socket.on('connectionStatus', (connectionState) => {
+    const numResponders = connectionState.numResponders;
+    $("#connection_status").html(`Status: <b>Connected</b> => ${numResponders} responders online`)
 })
 
 socket.on('classify', (data) => {

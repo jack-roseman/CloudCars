@@ -156,8 +156,24 @@ process.on('SIGINT', function(){
     });
 });
 
+var clients = [];
+connectionState = {
+    numResponders: 0
+}
 io.on('connection', (socket) => {
-    socket.emit('connected', true);
+    connectionState.numResponders += 1;
+    socket.emit('connected', connectionState); //ping clients
+    socket.on('connected_ack', () => {         //check if client responds
+        console.log(`One responder acknowledged connected => ${connectionState.numResponders} responders connected`);
+        socket.emit('connectionStatus', connectionState); //ping clients
+    });
+
+    socket.on('disconnect', () => {
+        connectionState.numResponders -= 1;
+        console.log(`One responder disconnected => ${connectionState.numResponders} responders connected`);
+        socket.emit('connected', connectionState); //ping client
+    });
+
     socket.on('ack', (res) => {
         new ImageClassification({
             _id: new mongoose.Types.ObjectId(),
