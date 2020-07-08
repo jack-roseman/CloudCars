@@ -1,8 +1,12 @@
 const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 3000
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
 var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
 const Vehicle = require('./api/models/Vehicle.js');
+const Partner = require('./api/models/Partner.js');
 
 // set up database
 const connectionString = "mongodb+srv://jroseman:Poland33@cloudcars-tmsbt.gcp.mongodb.net/CloudCars?retryWrites=true&w=majority";
@@ -12,8 +16,6 @@ const connectionOptions = {
 }
 
 // set up BodyParser
-var bodyParser = require('body-parser');
-const Partner = require('./api/models/Partner.js');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -109,9 +111,28 @@ app.get('/partners', (req, res) => {
 	})
 })
 
-app.listen(PORT, () => {
-    mongoose.connect(connectionString, connectionOptions).then(() => {
-        console.log("Server connected to MongoDB")
-    })
-    // mongoose.disconnect()
+app.post('/classify', (req, res) => {
+    io.emit('classify', req.body);
+    res.json({response:"processing"}).status(200);
 })
+
+server.listen(PORT, () => {
+    mongoose.connect(connectionString, connectionOptions)
+})
+
+mongoose.connection.on('connected', function(){  
+    console.log("Mongoose default connection is open to ", connectionString);
+ });
+
+process.on('SIGINT', function(){
+    mongoose.connection.close(function(){
+        console.log(termination("Mongoose default connection is disconnected due to application termination"));
+        process.exit(0)
+    });
+});
+
+io.on('connection', (socket) => {
+    socket.on('ack', (res) => {
+      console.log('answer: ' + res.answer);
+    });
+});
