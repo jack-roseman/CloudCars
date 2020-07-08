@@ -20,5 +20,5 @@ function classify(cl) {
         label: cl
     });
     $('#classify_image').attr('src', '')
-    $("#classify-div").hide();
+    $("#classify-div").hide()
 }
