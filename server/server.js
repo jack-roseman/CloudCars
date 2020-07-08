@@ -11,12 +11,9 @@ const Vehicle = require('./api/models/Vehicle.js');
 const Partner = require('./api/models/Partner.js');
 const ImageClassification = require('./api/models/ImageClassification.js');
 
-// set up database
-const connectionString = "mongodb+srv://jroseman:Poland33@cloudcars-tmsbt.gcp.mongodb.net/CloudCars?retryWrites=true&w=majority";
-const connectionOptions = {
-	useUnifiedTopology: true,
-	useNewUrlParser: true
-}
+//TODO - make this information more private
+const MONGO_URI = "mongodb+srv://jroseman:Poland33@cloudcars-tmsbt.gcp.mongodb.net/CloudCars?retryWrites=true&w=majority";
+const PORT = process.env.PORT || 3000;
 
 // set up BodyParser
 app.use(bodyParser.json());
@@ -27,7 +24,7 @@ app.set('view engine', 'ejs');
 app.use('/public', express.static('public'));
 
 app.get('/', (req, res) => {
-    res.redirect('/public/databaseops.html');
+    res.redirect('/public/respond.html');
 });
 
 app.get('/db-ops', (req, res) => {
@@ -141,13 +138,15 @@ app.get('/server-info', (req, res) => {
     }).status(200);
 });
 
-const port = process.env.PORT || 3000;
-server.listen(port);
+server.listen(PORT);
 
-mongoose.connect(process.env.MONGODB_URI || connectionString, connectionOptions);
+mongoose.connect(process.env.MONGOLAB_PINK_URI || MONGO_URI, {
+	useUnifiedTopology: true,
+	useNewUrlParser: true
+});
 
 mongoose.connection.on('connected', function(){  
-    console.log("Mongoose default connection is open to ", connectionString);
+    console.log("Mongoose default connection is open");
  });
 
 process.on('SIGINT', function(){
