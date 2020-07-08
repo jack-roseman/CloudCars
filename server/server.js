@@ -5,7 +5,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-const PORT = process.env.PORT || 3000
+require('dotenv').config()
 
 const Vehicle = require('./api/models/Vehicle.js');
 const Partner = require('./api/models/Partner.js');
@@ -144,10 +144,10 @@ app.get('/server-info', (req, res) => {
     }).status(200);
 });
 
-server.listen(PORT, () => {
-    mongoose.connect(connectionString, connectionOptions)
-})
+const port = process.env.PORT || 3000;
+server.listen(port);
 
+//mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/your-app-name');
 mongoose.connection.on('connected', function(){  
     console.log("Mongoose default connection is open to ", connectionString);
  });
