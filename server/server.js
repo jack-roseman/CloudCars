@@ -30,12 +30,9 @@ app.get('/', (req, res) => {
     res.redirect('/public/databaseops.html');
 });
 
-
-
 app.get('/db-ops', (req, res) => {
     res.redirect('/public/databaseops.html');
 });
-
 
 app.get('/classification-ops', (req, res) => {
     res.redirect('/public/respond.html');
@@ -147,7 +144,8 @@ app.get('/server-info', (req, res) => {
 const port = process.env.PORT || 3000;
 server.listen(port);
 
-//mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/your-app-name');
+mongoose.connect(process.env.MONGODB_URI || connectionString, connectionOptions);
+
 mongoose.connection.on('connected', function(){  
     console.log("Mongoose default connection is open to ", connectionString);
  });
