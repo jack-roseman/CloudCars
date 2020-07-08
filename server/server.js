@@ -1,3 +1,4 @@
+const os = require('os');
 const express = require('express')
 const app = express()
 var server = require('http').createServer(app);
@@ -27,6 +28,17 @@ app.use('/public', express.static('public'));
 
 app.get('/', (req, res) => {
     res.redirect('/public/databaseops.html');
+});
+
+
+
+app.get('/db-ops', (req, res) => {
+    res.redirect('/public/databaseops.html');
+});
+
+
+app.get('/classification-ops', (req, res) => {
+    res.redirect('/public/respond.html');
 })
 
 app.post('/vehicles/register', (req, res) => {
@@ -118,6 +130,20 @@ app.post('/classify', (req, res) => {
     res.json({response:"processing"}).status(200);
 })
 
+app.get('/server-info', (req, res) => {
+    res.json({
+        hostname: os.hostname(),
+        homedir: os.homedir(),
+        platform: os.platform(),
+        architecture: os.arch(),
+        type: os.type(),
+        totalmem: os.totalmem(),
+        release: os.release(),
+        EOLmarker: os.EOL,
+
+    }).status(200);
+});
+
 server.listen(PORT, () => {
     mongoose.connect(connectionString, connectionOptions)
 })
@@ -145,3 +171,5 @@ io.on('connection', (socket) => {
         });
     });
 });
+
+
