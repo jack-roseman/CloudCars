@@ -6,11 +6,6 @@ socket.on('connected', (connectionState) => {
     socket.emit('connected_ack'); 
 })
 
-socket.on('connectionStatus', (connectionState) => {
-    const numResponders = connectionState.numResponders;
-    $("#connection_status").html(`Status: <b>Connected</b> => ${numResponders} responders online`)
-})
-
 socket.on('classify', (data) => {
     $("#classify_image").attr('src', data.imgUrl);
     $("#classify-div").show()

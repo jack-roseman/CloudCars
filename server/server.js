@@ -162,10 +162,10 @@ connectionState = {
 }
 io.on('connection', (socket) => {
     connectionState.numResponders += 1;
+
     socket.emit('connected', connectionState); //ping clients
     socket.on('connected_ack', () => {         //check if client responds
         console.log(`One responder acknowledged connected => ${connectionState.numResponders} responders connected`);
-        socket.emit('connectionStatus', connectionState); //ping clients
     });
 
     socket.on('disconnect', () => {
