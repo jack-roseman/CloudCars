@@ -1,8 +1,8 @@
 var socket = io();
 var queue;
 
-socket.on('connected', () => {
-    socket.emit('connected_ack'); 
+socket.emit('connected_ack'); 
+    socket.on('connected', () => {
 });
 
 socket.on('connectionStateChange', (connectionState) => {
@@ -16,16 +16,16 @@ socket.on('classificationTaskChange', (tasks) => {
         let task = queue.peek();
         localStorage.setItem('current_task', JSON.stringify(task));
         $("#classify_image").attr('src', task.imgUrl);
-        $("#classify-div").show()
+        $("#classify-div").show();
     } else {
         $("#classify_image").attr('src', '');
-        $("#classify-div").hide()
+        $("#classify-div").hide();
     }
 });
 
 $(document).ready(() => {
-    $('#clean_btn').on('click', () => classify('clean')); 
-    $('#dirty_btn').on('click', () => classify('dirty'));
+    $('#clean-btn').on('click', () => classify('clean')); 
+    $('#dirty-btn').on('click', () => classify('dirty'));
 });
 
 function classify(cl) {
@@ -36,6 +36,6 @@ function classify(cl) {
         imgUrl:  currentTask.imgUrl,
         label: cl
     });
-    $('#classify_image').attr('src', '');
+    $('#classify-image').attr('src', '');
     $("#classify-div").hide();
 }
