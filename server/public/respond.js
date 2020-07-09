@@ -1,5 +1,5 @@
 var socket = io();
-var queue;
+let queue;
 
 socket.emit('connected_ack'); 
     socket.on('connected', () => {
