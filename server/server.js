@@ -15,6 +15,11 @@ const ImageClassification = require('./api/models/ImageClassification.js');
 const MONGO_URI = "mongodb+srv://jroseman:Poland33@cloudcars-tmsbt.gcp.mongodb.net/CloudCars?retryWrites=true&w=majority";
 const PORT = process.env.PORT || 3000;
 
+//maintain the state of the what the responders are doing
+connectionState = {
+    numResponders: 0
+}
+
 // set up BodyParser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -156,10 +161,6 @@ process.on('SIGINT', function(){
     });
 });
 
-var clients = [];
-connectionState = {
-    numResponders: 0
-}
 io.on('connection', (socket) => {
     connectionState.numResponders += 1;
 
