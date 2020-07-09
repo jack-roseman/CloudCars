@@ -20,6 +20,9 @@ connectionState = {
     numResponders: 0
 }
 
+classificationTasks = new Map();
+numClassifications = 0
+
 // set up BodyParser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -125,7 +128,12 @@ app.get('/partners', (req, res) => {
 })
 
 app.post('/classify', (req, res) => {
-    io.emit('classify', req.body);
+    classificationTask = {
+        id: ++numClassifications,
+        imgUrl: req.body.imgUrl
+    }
+    classificationTasks.set(classificationTask.id, classificationTask)
+    io.emit('classificationTaskChange', [...classificationTasks.values()]);
     res.json({response:"processing"}).status(200);
 })
 
@@ -162,28 +170,29 @@ process.on('SIGINT', function(){
 });
 
 io.on('connection', (socket) => {
-    connectionState.numResponders += 1;
-
-    socket.emit('connected', connectionState); //ping clients
+    socket.emit('connected');                   //ping clients
     socket.on('connected_ack', () => {         //check if client responds
+        connectionState.numResponders += 1;
         console.log(`One responder acknowledged connected => ${connectionState.numResponders} responders connected`);
+        io.emit('connectionStateChange', connectionState);
+        io.emit('classificationTaskChange', [...classificationTasks.values()])
     });
 
     socket.on('disconnect', () => {
         connectionState.numResponders -= 1;
         console.log(`One responder disconnected => ${connectionState.numResponders} responders connected`);
-        socket.emit('connected', connectionState); //ping client
+        io.emit('connectionStateChange', connectionState); 
     });
 
-    socket.on('ack', (res) => {
+    socket.on('classification_completion', (task) => {
         new ImageClassification({
             _id: new mongoose.Types.ObjectId(),
-            url: res.imgUrl,
-            label: res.label,   //clean or dirty
-        }).save().then((classification) => {
-            console.log(classification);
-        });
+            url: task.imgUrl,
+            label: task.label,   //clean or dirty
+        }).save();
+
+        classificationTasks.delete(task.id); //remove task from queue since someone responded to it
+        io.emit('classificationTaskChange', [...classificationTasks.values()]);
+        console.log(task);
     });
 });
-
-
