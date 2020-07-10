@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const mongoose = require("mongoose");
 const Partner = require("../models/Partner.js");
 
 router.get("/", (req, res) => {
