@@ -113,6 +113,7 @@ app.use((error, req, res, next) => {
 io.on("connection", (socket) => {
   socket.emit("connected"); //ping clients
   socket.on("connected_ack", () => {
+    //check if client responds
     console.log(
       `One responder acknowledged connected => ${addResponder()} responders connected`
     );
