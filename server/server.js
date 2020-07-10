@@ -1,29 +1,49 @@
 const os = require("os");
 require("dotenv").config();
+const http = require("http");
 const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const vehicleRoutes = require("./api/routes/vehicles");
 const partnerRoutes = require("./api/routes/partners");
-const classifyRoutes = require("./api/routes/classify");
-const { reset } = require("nodemon");
 
 const app = express();
-const server = require("http").createServer(app);
+const server = http.createServer(app);
 const io = require("socket.io")(server);
-//TODO - make this information more private
-const MONGO_URI =
-  "mongodb+srv://jroseman:Poland33@cloudcars-tmsbt.gcp.mongodb.net/CloudCars?retryWrites=true&w=majority";
+const {
+  addResponder,
+  removeResponder,
+  getClassificationTasks,
+  addClassificationTask,
+  removeClassificationTask,
+  getConnectionState
+} = require("./state");
+
+const ImageClassification = require("./api/models/ImageClassification.js");
+
 const PORT = process.env.PORT || 3000;
+const MONGO_URI = `mongodb+srv://jroseman:${process.env.MONGO_PW}@cloudcars-tmsbt.gcp.mongodb.net/CloudCars?retryWrites=true&w=majority`;
 
-//maintain the state of the what the responders are doing
-connectionState = {
-  numResponders: 0,
-};
-classificationTasks = new Map();
-numClassifications = 0;
+mongoose.connect(process.env.MONGOLAB_PINK_URI || MONGO_URI, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
 
+mongoose.connection.on("connected", function () {
+  console.log("Mongoose default connection is open");
+});
+
+process.on("SIGINT", function () {
+  mongoose.connection.close(function () {
+    console.log(
+      "Mongoose default connection is disconnected due to application termination"
+    );
+    process.exit(0);
+  });
+});
+
+app.set("view engine", "ejs");
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -40,17 +60,20 @@ app.use((req, res, next) => {
   next();
 });
 
-app.set("view engine", "ejs");
-
-//ROUTES
+//API ROUTES
 app.use("/vehicles", vehicleRoutes);
 app.use("/partners", partnerRoutes);
-app.use("/classify", classifyRoutes);
+app.post("/classify", (req, res) => {
+  addClassificationTask(req.body.imgUrl);
+  io.emit("classificationTaskChange", [...getClassificationTasks()]);
+  res.json({ response: "processing" }).status(200);
+});
+
+//WEB PAGE ROUTES
 app.use("/public", express.static("public"));
 app.get("/", (req, res) => {
   res.redirect("/public/respond.html");
 });
-
 app.get("/db-ops", (req, res) => {
   res.redirect("/public/databaseops.html");
 });
@@ -71,11 +94,13 @@ app.get("/server-info", (req, res) => {
     })
     .status(200);
 });
+
 app.use((req, res, next) => {
   const error = new Error("404");
   error.status = 404;
   next(error);
 });
+
 app.use((error, req, res, next) => {
   res.status(error.status || 500);
   res.json({
@@ -85,40 +110,21 @@ app.use((error, req, res, next) => {
   });
 });
 
-mongoose.connect(process.env.MONGOLAB_PINK_URI || MONGO_URI, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-});
-
-mongoose.connection.on("connected", function () {
-  console.log("Mongoose default connection is open");
-});
-
-process.on("SIGINT", function () {
-  mongoose.connection.close(function () {
-    console.log("Mongoose default connection is disconnected due to application termination");
-    process.exit(0);
-  });
-});
-
 io.on("connection", (socket) => {
   socket.emit("connected"); //ping clients
   socket.on("connected_ack", () => {
-    //check if client responds
-    connectionState.numResponders += 1;
     console.log(
-      `One responder acknowledged connected => ${connectionState.numResponders} responders connected`
+      `One responder acknowledged connected => ${addResponder()} responders connected`
     );
-    io.emit("connectionStateChange", connectionState);
-    io.emit("classificationTaskChange", [...classificationTasks.values()]);
+    io.emit("connectionStateChange", getConnectionState());
+    io.emit("classificationTaskChange", [...getClassificationTasks()]);
   });
 
   socket.on("disconnect", () => {
-    connectionState.numResponders -= 1;
     console.log(
-      `One responder disconnected => ${connectionState.numResponders} responders connected`
+      `One responder disconnected => ${removeResponder()} responders connected`
     );
-    io.emit("connectionStateChange", connectionState);
+    io.emit("connectionStateChange", getConnectionState());
   });
 
   socket.on("classification_completion", (task) => {
@@ -127,9 +133,8 @@ io.on("connection", (socket) => {
       url: task.imgUrl,
       label: task.label, //clean or dirty
     }).save();
-
-    classificationTasks.delete(task.id); //remove task from queue since someone responded to it
-    io.emit("classificationTaskChange", [...classificationTasks.values()]);
+    removeClassificationTask(task.id);
+    io.emit("classificationTaskChange", [...getClassificationTasks()]);
     console.log(task);
   });
 });

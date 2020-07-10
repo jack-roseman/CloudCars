@@ -15,10 +15,10 @@ socket.on('classificationTaskChange', (tasks) => {
     if (queue.length != 0) {
         let task = queue.peek();
         localStorage.setItem('current_task', JSON.stringify(task));
-        $("#classify_image").attr('src', task.imgUrl);
+        $("#classify-image").attr('src', task.imgUrl);
         $("#classify-div").show();
     } else {
-        $("#classify_image").attr('src', '');
+        $("#classify-image").attr('src', '');
         $("#classify-div").hide();
     }
 });
