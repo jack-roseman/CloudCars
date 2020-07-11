@@ -1,0 +1,31 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node ./server.js",
+    "test": "nodemon ./server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jack-roseman/CloudCars.git"
+  },
+  "author": "Jack Roseman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jack-roseman/CloudCars/issues"
+  },
+  "homepage": "https://github.com/jack-roseman/CloudCars#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.19",
+    "morgan": "^1.10.0",
+    "os": "^0.1.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
