@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="partners">
-      <h2>Partners</h2>
+      <!-- <h2>Partners</h2> -->
       <div v-for="partner in allPartners" :key="partner.id" class="partner">
         <h4>{{partner.name}}</h4>
         <ul>
@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="vehicles">
-      <h2>Vehicles</h2>
+      <!-- <h2>Vehicles</h2> -->
       <div v-for="vehicle in allVehicles" :key="vehicle.id" class="vehicle">
         <h4>{{vehicle.owner}} {{vehicle.make}} {{vehicle.model}} {{vehicle.year}}</h4>
         <ul>
@@ -45,13 +45,26 @@ export default {
 </script>
 
 <style scoped>
-    ul {
-        margin-left: 20px;
-        margin-left: 20px;
-    }
+ul {
+  margin-left: 20px;
+  margin-left: 20px;
+}
 
+.vehicles,
+.partners {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 1rem;
+}
 
-    .vehicle, .partner {
-        margin-left: 20px;
-    }
+.vehicle,
+.partner {
+  border: 1px solid #ccc;
+  background: #41b883;
+  padding: 1rem;
+  border-radius: 5px;
+  text-align: center;
+  position: relative;
+  cursor: pointer;
+}
 </style>

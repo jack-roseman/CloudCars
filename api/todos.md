@@ -1,0 +1,2 @@
+- [ ] Add authentication middleware to secure endpoints.
+- [ ] Add multer middleware for classification endpoint.
