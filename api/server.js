@@ -1,4 +1,3 @@
-const os = require("os");
 require("dotenv").config();
 const http = require("http");
 const express = require("express");
@@ -69,31 +68,9 @@ app.post("/classify", (req, res) => {
   res.json({ response: "processing" }).status(200);
 });
 
-//WEB PAGE ROUTES
+//STATIC WEB PAGE ROUTES
 app.use("/public", express.static("public"));
-app.get("/", (req, res) => {
-  res.redirect("/public/respond.html");
-});
-app.get("/db-ops", (req, res) => {
-  res.redirect("/public/databaseops.html");
-});
-app.get("/classification-ops", (req, res) => {
-  res.redirect("/public/respond.html");
-});
-app.get("/server-info", (req, res) => {
-  res
-    .json({
-      hostname: os.hostname(),
-      homedir: os.homedir(),
-      platform: os.platform(),
-      architecture: os.arch(),
-      type: os.type(),
-      totalmem: os.totalmem(),
-      release: os.release(),
-      EOLmarker: os.EOL,
-    })
-    .status(200);
-});
+app.get("/", (req, res) => res.redirect("/public/respond.html"));
 
 app.use((req, res, next) => {
   const error = new Error("404");

@@ -1,2 +1,3 @@
 - [ ] Add authentication middleware to secure endpoints.
 - [ ] Add multer middleware for classification endpoint.
+- [ ] Add cron to push classifications to database.
