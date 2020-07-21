@@ -24,5 +24,3 @@ General todos:
 - [ ] Add multer middleware for classification endpoint.
 - [ ] Add cron to push classifications to database.
 - [ ] Move frontend to admin-app and remove from project
-- [ ] 
-- [ ] 
