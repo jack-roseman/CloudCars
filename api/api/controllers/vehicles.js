@@ -24,7 +24,7 @@ exports.vehicles_get_all = (req, res) => {
     });
 };
 
-exports.vehicles_register = (req, res) => {
+exports.vehicles_add_vehicle = (req, res) => {
   new Vehicle({
     _id: new mongoose.Types.ObjectId(),
     owner: req.body.owner,

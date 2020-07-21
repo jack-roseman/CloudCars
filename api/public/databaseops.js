@@ -71,7 +71,7 @@ function registerVehicle() {
         year: document.getElementById("year").value,
     }
     var xhttp = new XMLHttpRequest();
-    xhttp.open("POST", `${url}/vehicles/register`, false);
+    xhttp.open("POST", `${url}/vehicles/`, false);
     xhttp.setRequestHeader('Content-Type', 'application/json');
     xhttp.send(JSON.stringify(json));
 }
@@ -93,7 +93,7 @@ function registerPartner() {
   }
   
   var xhttp = new XMLHttpRequest();
-  xhttp.open("POST", `${url}/partners/register`, false);
+  xhttp.open("POST", `${url}/partners/`, false);
   xhttp.setRequestHeader('Content-Type', 'application/json');
   xhttp.send(JSON.stringify(json));
 }

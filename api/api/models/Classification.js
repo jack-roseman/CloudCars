@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var ImageClassificationSchema = new Schema({
+var ClassificationSchema = new Schema({
     _id: mongoose.Schema.Types.ObjectId,
     url: String,     //link to image
     label: String,   //clean or dirty
@@ -11,4 +11,4 @@ var ImageClassificationSchema = new Schema({
     // - who
 }); 
 
-module.exports = mongoose.model('ImageClassification', ImageClassificationSchema);
+exports = mongoose.model('Classification', ClassificationSchema);

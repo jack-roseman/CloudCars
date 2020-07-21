@@ -15,11 +15,6 @@ var PartnerSchema = new Schema({
     numberOfEmployees: {type: Number, default: 1},          //number of employees
     numberOfServicings: {type: Number, default: 0},          //number of cleanings
     dateJoined: { type: Date, default: Date.now },          //data joined CloudCars
-
-    //future attributes
-    // - service rating
-    // - service prices
-    // - 
 });
 
 

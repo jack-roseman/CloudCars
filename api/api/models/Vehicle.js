@@ -19,9 +19,6 @@ var VehicleSchema = new Schema({
     dateOfLastCleaning: {type: Date, default: undefined},            //last time car was cleaned
     numTimesServiced : {type: Number, default: 0},              //number of times vehicle has been service
     dateJoined: {type: Date, default: Date.now}                 //date joined cloud cars
-
-    //future attributes
-    // - VIN number
 }); 
 
 module.exports = mongoose.model('Vehicle', VehicleSchema);

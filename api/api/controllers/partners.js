@@ -23,7 +23,7 @@ exports.partners_get_all = (req, res) => {
     });
 };
 
-exports.partners_register = (req, res) => {
+exports.partners_add_partner = (req, res) => {
   new Partner({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
