@@ -71,6 +71,7 @@ app.post("/classify", (req, res) => {
 //STATIC WEB PAGE ROUTES
 app.use("/public", express.static("public"));
 app.get("/", (req, res) => res.redirect("/public/respond.html"));
+app.get("/db-ops", (req, res) => res.redirect("/public/databaseops.html"));
 
 app.use((req, res, next) => {
   const error = new Error("404");

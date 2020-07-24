@@ -11,4 +11,4 @@ var ClassificationSchema = new Schema({
     // - who
 }); 
 
-exports = mongoose.model('Classification', ClassificationSchema);
+module.exports = mongoose.model('Classification', ClassificationSchema);
