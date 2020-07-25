@@ -6,9 +6,6 @@ var ClassificationSchema = new Schema({
   url: String, //link to image
   classification: String, //clean or dirty
   date: { type: Date, default: Date.now }, //time this classification occurred
-
-  //future attributes
-  // - who
 });
 
 module.exports = mongoose.model("Classification", ClassificationSchema);
