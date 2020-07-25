@@ -1,4 +1,4 @@
-Endpoint todos:
+Endpoints:
 
 /vehicles
 - [X] GET
@@ -13,15 +13,16 @@ Endpoint todos:
 - [ ] DELETE
 
 /classifications
-- [ ] GET
-- [ ] POST
-- [ ] PATCH
+- [X] GET
+- [X] POST
 - [ ] DELETE
 
 General todos:
 
+- [ ] Add validation to models.
 - [ ] Add authentication middleware to secure endpoints.
+- [ ] Add loginpage.html for public folder using authentication middleware and cookies to save jwt.
 - [ ] Add multer middleware for classification endpoint.
-- [ ] Move frontend to admin-app and remove from project.
 - [ ] Develop the model schemas to be more robust.
 - [ ] Instead of return clean or dirty return a scale of clean though dirty that is defined by a criterion.
+- [ ] Move frontend to admin-app and remove from project.

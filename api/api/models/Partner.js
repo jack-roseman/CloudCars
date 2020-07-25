@@ -15,7 +15,7 @@ var PartnerSchema = new Schema({
   services: [String], //services offered
   numberOfEmployees: { type: Number, default: 1 }, //number of employees
   numberOfServicings: { type: Number, default: 0 }, //number of cleanings
-  dateJoined: { type: Date, default: Date.now }, //data joined CloudCars
+  dateJoined: { type: Date, default: Date.now }, //date joined CloudCars
 });
 
 module.exports = mongoose.model("Partner", PartnerSchema);

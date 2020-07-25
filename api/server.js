@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const vehicleRoutes = require("./api/routes/vehicles");
 const partnerRoutes = require("./api/routes/partners");
+const classificationRoutes = require("./api/routes/classifications");
 
 const app = express();
 const server = http.createServer(app);
@@ -62,6 +63,8 @@ app.use((req, res, next) => {
 //API ROUTES
 app.use("/vehicles", vehicleRoutes);
 app.use("/partners", partnerRoutes);
+app.use("/classifications", classificationRoutes);
+
 app.post("/classify", (req, res) => {
   addClassificationTask(req.body.imgUrl);
   io.emit("classificationTaskChange", [...getClassificationTasks()]);
