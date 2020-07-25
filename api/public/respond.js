@@ -28,6 +28,7 @@ socket.on("classificationTaskChange", (tasks) => {
   }
 });
 
+
 $(document).ready(() => {
   $("#clean-btn").on("click", () => classify("clean"));
   $("#dirty-btn").on("click", () => classify("dirty"));

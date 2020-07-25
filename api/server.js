@@ -6,17 +6,19 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const vehicleRoutes = require("./api/routes/vehicles");
 const partnerRoutes = require("./api/routes/partners");
+const classificationRoutes = require("./api/routes/classifications");
 
 const app = express();
 const server = http.createServer(app);
 const io = require("socket.io")(server);
+var socket;
 const {
   addResponder,
   removeResponder,
   getClassificationTasks,
   addClassificationTask,
   removeClassificationTask,
-  getConnectionState
+  getConnectionState,
 } = require("./state");
 
 const Classification = require("./api/models/Classification.js");
@@ -62,10 +64,29 @@ app.use((req, res, next) => {
 //API ROUTES
 app.use("/vehicles", vehicleRoutes);
 app.use("/partners", partnerRoutes);
+app.use("/classifications", classificationRoutes);
 app.post("/classify", (req, res) => {
-  addClassificationTask(req.body.imgUrl);
-  io.emit("classificationTaskChange", [...getClassificationTasks()]);
-  res.json({ response: "processing" }).status(200);
+  if (socket) {
+    addClassificationTask(req.body.imgUrl);
+    io.emit("classificationTaskChange", [...getClassificationTasks()]);
+    socket.on("classification_completion", (task) => {
+      new Classification({
+        _id: new mongoose.Types.ObjectId(),
+        url: task.imgUrl,
+        classification: task.label, //clean or dirty
+      }).save();
+      removeClassificationTask(task.id);
+      io.emit("classificationTaskChange", [...getClassificationTasks()]);
+      res.status(200).json({
+        response: {
+          classification: task.label,
+        },
+      });
+      console.log(task);
+    });
+  } else {
+    res.status(200).json({ response: "Unable to respond" });
+  }
 });
 
 //STATIC WEB PAGE ROUTES
@@ -88,9 +109,10 @@ app.use((error, req, res, next) => {
   });
 });
 
-io.on("connection", (socket) => {
-  socket.emit("connected"); //ping clients
-  socket.on("connected_ack", () => {
+io.on("connection", (s) => {
+  socket = s;
+  s.emit("connected"); //ping clients
+  s.on("connected_ack", () => {
     //check if client responds
     console.log(
       `One responder acknowledged connected => ${addResponder()} responders connected`
@@ -99,22 +121,11 @@ io.on("connection", (socket) => {
     io.emit("classificationTaskChange", [...getClassificationTasks()]);
   });
 
-  socket.on("disconnect", () => {
+  s.on("disconnect", () => {
     console.log(
       `One responder disconnected => ${removeResponder()} responders connected`
     );
     io.emit("connectionStateChange", getConnectionState());
-  });
-
-  socket.on("classification_completion", (task) => {
-    new Classification({
-      _id: new mongoose.Types.ObjectId(),
-      url: task.imgUrl,
-      label: task.label, //clean or dirty
-    }).save();
-    removeClassificationTask(task.id);
-    io.emit("classificationTaskChange", [...getClassificationTasks()]);
-    console.log(task);
   });
 });
 
