@@ -24,3 +24,4 @@ General todos:
 - [ ] Add multer middleware for classification endpoint.
 - [ ] Move frontend to admin-app and remove from project.
 - [ ] Develop the model schemas to be more robust.
+- [ ] Instead of return clean or dirty return a scale of clean though dirty that is defined by a criterion.

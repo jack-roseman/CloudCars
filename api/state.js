@@ -12,13 +12,16 @@ module.exports = {
     connectionState.numResponders += 1;
     return connectionState.numResponders;
   },
+
   removeResponder: function () {
     connectionState.numResponders -= 1;
     return connectionState.numResponders;
   },
+
   getClassificationTasks: function () {
     return classificationTasks.values();
   },
+
   addClassificationTask: function (imgUrl) {
     let taskId = ++numClassifications;
     classificationTasks.set(taskId, {
@@ -27,10 +30,12 @@ module.exports = {
     });
     return true;
   },
-  removeClassificationTask: function(id) {
+
+  removeClassificationTask: function (id) {
     classificationTasks.delete(id); //remove task from queue since someone responded to it
   },
-  getConnectionState: function() {
-      return connectionState;
-  }
+
+  getConnectionState: function () {
+    return connectionState;
+  },
 };
