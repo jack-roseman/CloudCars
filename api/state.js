@@ -8,6 +8,7 @@ classificationTasks = new Map();
 numClassifications = 0;
 
 module.exports = {
+  getNumResponders: () => connectionState.numResponders,
   addResponder: function () {
     connectionState.numResponders += 1;
     return connectionState.numResponders;

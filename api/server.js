@@ -13,6 +13,7 @@ const server = http.createServer(app);
 const io = require("socket.io")(server);
 var socket;
 const {
+  getNumResponders,
   addResponder,
   removeResponder,
   getClassificationTasks,
@@ -66,7 +67,7 @@ app.use("/vehicles", vehicleRoutes);
 app.use("/partners", partnerRoutes);
 app.use("/classifications", classificationRoutes);
 app.post("/classify", (req, res) => {
-  if (socket) {
+  if (getNumResponders() > 0) {
     addClassificationTask(req.body.imgUrl);
     io.emit("classificationTaskChange", [...getClassificationTasks()]);
     socket.on("classification_completion", (task) => {
@@ -85,7 +86,8 @@ app.post("/classify", (req, res) => {
       console.log(task);
     });
   } else {
-    res.status(200).json({ response: "Unable to respond" });
+    res.status(500).json({ response: "Unable to respond" });
+    console.log("Missed a classification request!");
   }
 });
 
