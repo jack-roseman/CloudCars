@@ -4,5 +4,7 @@ const PartnerController = require("../controllers/partners");
 
 router.get("/", PartnerController.partners_get_all);
 router.post("/", PartnerController.partners_add_partner);
+router.patch("/:id", PartnerController.partners_patch_partner);
+router.delete("/:id", PartnerController.partners_delete_partner);
 
 module.exports = router;

@@ -4,14 +4,7 @@ var Schema = mongoose.Schema;
 var PartnerSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
   name: { type: String, required: true }, //name of partner
-  address: {
-    //location of partner
-    number: { type: String, required: true },
-    street: { type: String, required: true },
-    city: { type: String, required: true },
-    state: { type: String, required: true },
-    zip: { type: String, required: true },
-  },
+  address: { type: String, required: true }, //location of partner
   services: [String], //services offered
   numberOfEmployees: { type: Number, default: 1 }, //number of employees
   numberOfServicings: { type: Number, default: 0 }, //number of cleanings

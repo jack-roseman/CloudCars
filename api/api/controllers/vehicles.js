@@ -6,10 +6,7 @@ exports.vehicles_get_all = (req, res) => {
     .exec()
     .then((vehicles) => {
       if (vehicles) {
-        res.status(200).json({
-          message: "GET request to /vehicles",
-          vehicles: vehicles,
-        });
+        res.status(200).json(vehicles);
       } else {
         res.status(404).json({
           message: "No vehicles found",
@@ -33,11 +30,35 @@ exports.vehicles_add_vehicle = (req, res) => {
     year: req.body.year,
   })
     .save()
-    .then((result) => {
-      res.status(201).json({
-        createdVehicle: result,
+    .then((result) => res.status(201).json(result))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
       });
-    })
+    });
+};
+
+exports.vehicles_patch_vehicle = (req, res) => {
+  const updateOps = {};
+  for (var i = 0; i < req.body.length; i++) {
+    updateOps[req.body[i].property] = req.body[i].value;
+  }
+  Vehicle.findByIdAndUpdate(req.params.id, { $set: updateOps }, { new: true })
+    .exec()
+    .then((result) => res.status(200).json(result))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+};
+
+exports.vehicles_delete_vehicle = (req, res) => {
+  Vehicle.findByIdAndDelete(req.params.id)
+    .exec()
+    .then((result) => res.status(200).json(result))
     .catch((err) => {
       console.log(err);
       res.status(500).json({

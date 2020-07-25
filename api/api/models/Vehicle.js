@@ -8,14 +8,7 @@ var VehicleSchema = new Schema({
   model: { type: String, required: true }, //model of car, like Pacifica
   year: { type: String, required: true }, //year of car
   sanitaryStatus: String, //sanitary status
-  lastKnownAddress: {
-    //last reported address (used to calculate ETA to a partner)
-    number: String,
-    street: String,
-    city: String,
-    state: String,
-    zip: String,
-  },
+  lastKnownAddress: String, //last reported address (used to calculate ETA to a partner)
   lastImageSent: String, //last image of the interior of the car taken
   dateOfLastCleaning: Date, //last time car was cleaned
   numTimesServiced: { type: Number, default: 0 }, //number of times vehicle has been service

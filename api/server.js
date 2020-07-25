@@ -26,7 +26,7 @@ const Classification = require("./api/models/Classification.js");
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = `mongodb+srv://jroseman:${process.env.MONGO_PW}@cloudcars-tmsbt.gcp.mongodb.net/CloudCars?retryWrites=true&w=majority`;
-
+mongoose.set("useFindAndModify", false);
 mongoose.connect(process.env.MONGOLAB_PINK_URI || MONGO_URI, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
