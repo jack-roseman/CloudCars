@@ -26,3 +26,8 @@ General todos:
 - [ ] Develop the model schemas to be more robust.
 - [ ] Instead of return clean or dirty return a scale of clean though dirty that is defined by a criterion.
 - [ ] Move frontend to admin-app and remove from project.
+
+Questions:
+ - How will self-driving cars communicate to the network?
+
+
