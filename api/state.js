@@ -15,7 +15,11 @@ module.exports = {
   },
 
   removeResponder: function () {
-    connectionState.numResponders -= 1;
+    if (connectionState.numResponders - 1 < 0) {
+      connectionState.numResponders = 0;
+    } else {
+      connectionState.numResponders -= 1;
+    }
     return connectionState.numResponders;
   },
 

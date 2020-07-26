@@ -116,9 +116,9 @@ app.post("/api/classify", upload.single("data"), (req, res) => {
       });
     });
   } else {
+    console.log("Missed a classification request!");
     fs.unlink(req.file.path, (error) => (error ? console.log(error) : null));
     res.status(500).json({ response: "Unable to respond" });
-    console.log("Missed a classification request!");
   }
 });
 
