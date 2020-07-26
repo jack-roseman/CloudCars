@@ -23,11 +23,11 @@ module.exports = {
     return classificationTasks.values();
   },
 
-  addClassificationTask: function (imgUrl) {
+  addClassificationTask: function (path) {
     let taskId = ++numClassifications;
     classificationTasks.set(taskId, {
       id: taskId,
-      imgUrl: imgUrl,
+      path: path,
     });
     return true;
   },

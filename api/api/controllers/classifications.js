@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
+const fs = require("fs");
 const Classification = require("../models/Classification.js");
+var root = require("../../root");
 
 exports.classifications_get_all = (req, res) => {
   Classification.find()
@@ -39,7 +41,12 @@ exports.classifications_add_classification = (req, res) => {
 
 exports.classifications_delete_classification = (req, res) => {
   Classification.findByIdAndDelete(req.params.id)
-    .then((result) => res.status(200).json(result))
+    .then((result) => {
+      fs.unlink(`${root}/${result.path}`, (error) =>
+        error ? console.log(error) : null
+      );
+      res.status(200).json({ message: "ok" });
+    })
     .catch((err) => {
       console.log(err);
       res.status(500).json({

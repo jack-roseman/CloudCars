@@ -20,14 +20,16 @@ socket.on("classificationTaskChange", (tasks) => {
   if (queue.length != 0) {
     let task = queue.peek();
     localStorage.setItem("current_task", JSON.stringify(task));
-    $("#classify-image").attr("src", task.imgUrl);
+    $("#classify-image").attr(
+      "src",
+      `http://${window.location.host}/${task.path}`
+    );
     $("#classify-div").show();
   } else {
     $("#classify-image").attr("src", "");
     $("#classify-div").hide();
   }
 });
-
 
 $(document).ready(() => {
   $("#clean-btn").on("click", () => classify("clean"));

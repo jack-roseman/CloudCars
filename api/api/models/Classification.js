@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var ClassificationSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
-  url: String, //link to image
+  path: { type: String, required: true },
   classification: String, //clean or dirty
   date: { type: Date, default: Date.now }, //time this classification occurred
 });

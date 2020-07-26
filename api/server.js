@@ -4,9 +4,13 @@ const express = require("express");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const fs = require("fs");
+var os = require("os");
+const multer = require("multer");
 const vehicleRoutes = require("./api/routes/vehicles");
 const partnerRoutes = require("./api/routes/partners");
 const classificationRoutes = require("./api/routes/classifications");
+const Classification = require("./api/models/Classification.js");
 
 const app = express();
 const server = http.createServer(app);
@@ -22,7 +26,34 @@ const {
   getConnectionState,
 } = require("./state");
 
-const Classification = require("./api/models/Classification.js");
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      new mongoose.Types.ObjectId().toString() +
+        (file.mimetype === "image/jpeg" ? ".jpg" : ".png")
+    );
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    cb(null, true);
+  } else {
+    cb(new Error("Image must have mimetype of image/jpeg or image/png"), false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5, //5 megabytes,
+  },
+  fileFilter: fileFilter,
+});
 
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = `mongodb+srv://jroseman:${process.env.MONGO_PW}@cloudcars-tmsbt.gcp.mongodb.net/CloudCars?retryWrites=true&w=majority`;
@@ -63,17 +94,17 @@ app.use((req, res, next) => {
 });
 
 //API ROUTES
-app.use("/vehicles", vehicleRoutes);
-app.use("/partners", partnerRoutes);
-app.use("/classifications", classificationRoutes);
-app.post("/classify", (req, res) => {
+app.use("/api/vehicles", vehicleRoutes);
+app.use("/api/partners", partnerRoutes);
+app.use("/api/classifications", classificationRoutes);
+app.post("/api/classify", upload.single("data"), (req, res) => {
   if (getNumResponders() > 0) {
-    addClassificationTask(req.body.imgUrl);
+    addClassificationTask(req.file.path);
     io.emit("classificationTaskChange", [...getClassificationTasks()]);
     socket.on("classification_completion", (task) => {
       new Classification({
-        _id: new mongoose.Types.ObjectId(),
-        url: task.imgUrl,
+        _id: req.file.filename.split(".")[0],
+        path: req.file.path,
         classification: task.label, //clean or dirty
       }).save();
       removeClassificationTask(task.id);
@@ -83,9 +114,9 @@ app.post("/classify", (req, res) => {
           classification: task.label,
         },
       });
-      console.log(task);
     });
   } else {
+    fs.unlink(req.file.path, (error) => (error ? console.log(error) : null));
     res.status(500).json({ response: "Unable to respond" });
     console.log("Missed a classification request!");
   }
@@ -93,6 +124,7 @@ app.post("/classify", (req, res) => {
 
 //STATIC WEB PAGE ROUTES
 app.use("/public", express.static("public"));
+app.use("/uploads", express.static("uploads"));
 app.get("/", (req, res) => res.redirect("/public/respond.html"));
 app.get("/db-ops", (req, res) => res.redirect("/public/databaseops.html"));
 

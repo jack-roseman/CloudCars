@@ -20,13 +20,16 @@ Endpoints:
 - [x] POST
 - [x] DELETE
 
+/classify
+
+- [x] Add multer to store image in folder named uploads
+- [x] Render image in response.html
+
 General todos:
 
 - [ ] Add authentication middleware to secure endpoints.
 - [ ] Add loginpage.html for public folder using authentication middleware and cookies to save jwt.
 - [ ] Add validation to schema fields.
-- [ ] Add Google cloud storage to store images.
-- [ ] Add multer middleware for classification endpoint.
 - [ ] Instead of return clean or dirty return a scale of clean though dirty that is defined by a criterion.
 
 Questions:
