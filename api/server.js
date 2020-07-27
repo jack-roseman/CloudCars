@@ -109,31 +109,29 @@ app.post("/api/classify", upload.single("data"), (req, res) => {
       }).save();
       removeClassificationTask(task.id);
       io.emit("classificationTaskChange", [...getClassificationTasks()]);
-      let bookingRequest =
-        task.label === "clean"
-          ? undefined
-          : {
-              type: "POST",
-              url: `http://${req.hostname}/api/partners/closest`,
-              body: {
-                service_type: "interior cleaning",
-                vehicle_lat_long: {
-                  lat: req.body.lat,
-                  long: req.body.long,
+
+      res.status(200).json({
+        classification: task.label,
+        request:
+          task.label === "clean"
+            ? undefined
+            : {
+                type: "POST",
+                url: `http://${req.hostname}/api/partners/closest`,
+                body: {
+                  service_type: "interior cleaning",
+                  vehicle_lat_long: {
+                    lat: req.body.lat,
+                    long: req.body.long,
+                  },
                 },
               },
-            };
-      res.status(200).json({
-        response: {
-          classification: task.label,
-          request: bookingRequest,
-        },
       });
     });
   } else {
     console.log("Missed a classification request!");
     fs.unlink(req.file.path, (error) => (error ? console.log(error) : null));
-    res.status(500).json({ response: "Unable to respond" });
+    res.status(500).json({ error: "Unable to respond" });
   }
 });
 
