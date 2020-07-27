@@ -80,7 +80,6 @@ exports.partners_get_closest = async (req, res) => {
 
 exports.partners_add_partner = async (req, res) => {
   let addresses = await geoCoder.geocode(req.body.address);
-  console.log(addresses[0]);
   new Partner({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
