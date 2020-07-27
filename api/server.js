@@ -112,7 +112,7 @@ app.post("/api/classify", upload.single("data"), (req, res) => {
       let bookingRequest =
         task.label === "clean"
           ? undefined
-          : { type: "POST", url: `http://${os.hostname()}:${PORT}` };
+          : { type: "POST", url: `http://${req.hostname}:${PORT}` };
       res.status(200).json({
         response: {
           classification: task.label,
