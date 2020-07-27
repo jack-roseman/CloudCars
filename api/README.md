@@ -13,6 +13,8 @@ Endpoints:
 - [x] POST
 - [x] PATCH
 - [x] DELETE
+- [ ] Use a geo-coder to convert addresses into latitude and longitude (Google Geocode API)
+- [ ] Use Distance Matrix API to compute travel time from cars current address to partner
 
 /classifications
 
@@ -24,6 +26,13 @@ Endpoints:
 
 - [x] Add multer to store image in folder named uploads
 - [x] Render image in response.html
+
+/appointments
+
+- [ ] GET
+- [ ] POST
+- [ ] PATCH
+- [ ] DELETE
 
 General todos:
 

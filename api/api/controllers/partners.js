@@ -1,5 +1,10 @@
 const mongoose = require("mongoose");
 const Partner = require("../models/Partner.js");
+let nodeGeocoder = require("node-geocoder");
+
+let geoCoder = nodeGeocoder({
+  provider: "openstreetmap",
+});
 
 exports.partners_get_all = (req, res) => {
   Partner.find()
@@ -21,11 +26,15 @@ exports.partners_get_all = (req, res) => {
     });
 };
 
-exports.partners_add_partner = (req, res) => {
+exports.partners_add_partner = async (req, res) => {
+  let addresses = await geoCoder.geocode(req.body.address);
+  console.log(addresses[0]);
   new Partner({
     _id: new mongoose.Types.ObjectId(),
     name: req.body.name,
-    address: req.body.address,
+    address: {
+      ...addresses[0],
+    },
     services: req.body.services,
     numberOfEmployees: req.body.numberOfEmployees,
   })
