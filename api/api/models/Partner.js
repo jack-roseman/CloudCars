@@ -18,7 +18,7 @@ var PartnerSchema = new Schema(
       streetNumber: { type: String, required: false },
       neighbourhood: { type: String, required: false },
     }, //location of partner
-    services: [String], //services offered
+    serviceTypes: [String], //services offered
     numberOfEmployees: { type: Number, default: 1 }, //number of employees
     numberOfServicings: { type: Number, default: 0 }, //number of cleanings
     dateJoined: { type: Date, default: Date.now }, //date joined CloudCars

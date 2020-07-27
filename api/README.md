@@ -13,8 +13,9 @@ Endpoints:
 - [x] POST
 - [x] PATCH
 - [x] DELETE
-- [ ] Use a geo-coder to convert addresses into latitude and longitude (Google Geocode API)
-- [ ] Use Distance Matrix API to compute travel time from cars current address to partner
+- [x] Use a geo-coder to convert addresses into latitude and longitude
+- [x] Use Distance Matrix API to compute travel time from cars current address to partner
+- [x] Implement partners_get_closest in ./api/controllers/partners to return closest partner
 
 /classifications
 
@@ -29,6 +30,7 @@ Endpoints:
 
 /appointments
 
+- [ ] Add Appointment schema as a model
 - [ ] GET
 - [ ] POST
 - [ ] PATCH

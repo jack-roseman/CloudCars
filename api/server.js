@@ -112,7 +112,17 @@ app.post("/api/classify", upload.single("data"), (req, res) => {
       let bookingRequest =
         task.label === "clean"
           ? undefined
-          : { type: "POST", url: `http://${req.hostname}:${PORT}` };
+          : {
+              type: "POST",
+              url: `http://${req.hostname}/api/partners/closest`,
+              body: {
+                service_type: "interior cleaning",
+                vehicle_lat_long: {
+                  lat: req.body.lat,
+                  long: req.body.long,
+                },
+              },
+            };
       res.status(200).json({
         response: {
           classification: task.label,
