@@ -98,7 +98,6 @@ app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/partners", partnerRoutes);
 app.use("/api/classifications", classificationRoutes);
 app.post("/api/classify", upload.single("data"), (req, res) => {
-  console.log(req);
   if (getNumResponders() > 0 && socket) {
     addClassificationTask(req.file.path);
     io.emit("classificationTaskChange", [...getClassificationTasks()]);
