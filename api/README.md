@@ -14,7 +14,7 @@ Endpoints:
 - [x] PATCH
 - [x] DELETE
 - [x] Use a geo-coder to convert addresses into latitude and longitude
-- [ ] Change geo-coder to
+- [ ] Change geo-coder to Google Geocoding API
 
 /partners/closest
 
