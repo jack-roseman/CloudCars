@@ -21,6 +21,26 @@ exports.vehicles_get_all = (req, res) => {
     });
 };
 
+exports.vehicles_get_vehicle = (req, res) => {
+  Vehicle.findById(req.params.id)
+    .exec()
+    .then((doc) => {
+      if (doc) {
+        res.status(200).json(doc);
+      } else {
+        res.status(404).json({
+          message: "No vehicles matching that ID",
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+};
+
 exports.vehicles_add_vehicle = (req, res) => {
   new Vehicle({
     _id: new mongoose.Types.ObjectId(),

@@ -23,6 +23,26 @@ exports.classifications_get_all = (req, res) => {
     });
 };
 
+exports.classifications_get_classification = (req, res) => {
+  Classification.findById(req.params.id)
+    .exec()
+    .then((doc) => {
+      if (doc) {
+        res.status(200).json(doc);
+      } else {
+        res.status(404).json({
+          message: "No classifications matching that ID",
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+};
+
 exports.classifications_add_classification = (req, res) => {
   new Classification({
     _id: new mongoose.Types.ObjectId(),
@@ -41,6 +61,7 @@ exports.classifications_add_classification = (req, res) => {
 
 exports.classifications_delete_classification = (req, res) => {
   Classification.findByIdAndDelete(req.params.id)
+    .exec()
     .then((result) => {
       fs.unlink(`${root}/${result.path}`, (error) =>
         error ? console.log(error) : null

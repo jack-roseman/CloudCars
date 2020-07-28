@@ -4,6 +4,10 @@ Endpoints:
 
 - [x] GET
 - [x] POST
+
+/vehicles/{id}
+
+- [x] GET
 - [x] PATCH
 - [x] DELETE
 
@@ -11,10 +15,9 @@ Endpoints:
 
 - [x] GET
 - [x] POST
-- [x] PATCH
-- [x] DELETE
+
 - [x] Use a geo-coder to convert addresses into latitude and longitude
-- [ ] Change geo-coder to Google Geocoding API
+- [ ] Change geo-coder to Google Geocoding API for better accuracy
 
 /partners/closest
 
@@ -22,10 +25,24 @@ Endpoints:
 - [x] Implement partners_get_closest in ./api/controllers/partners to return closest partner
 - [ ] Make it so that the search is limited to the serviceTypes
 
+/partners/{id}
+
+- [x] GET
+- [x] PATCH
+- [x] DELETE
+
+/partners/{id}/appointments
+
+- [ ] GET
+
 /classifications
 
 - [x] GET
 - [x] POST
+
+/classifications/{id}
+
+- [x] GET
 - [x] DELETE
 
 /classify
@@ -35,10 +52,12 @@ Endpoints:
 
 /appointments
 
-- [ ] Add Appointment schema as a model
+- [x] Add Appointment schema as a model
 - [ ] GET
-- [ ] POST
-- [ ] PATCH
+
+/appointments/{id}
+
+- [ ] GET
 - [ ] DELETE
 
 General todos:
