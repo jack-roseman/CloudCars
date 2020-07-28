@@ -78,7 +78,15 @@ exports.vehicles_patch_vehicle = (req, res) => {
 exports.vehicles_delete_vehicle = (req, res) => {
   Vehicle.findByIdAndDelete(req.params.id)
     .exec()
-    .then((result) => res.status(200).json(result))
+    .then((doc) => {
+      if (doc) {
+        res.status(200).json(doc);
+      } else {
+        res.status(404).json({
+          message: "No vehicles matching that ID",
+        });
+      }
+    })
     .catch((err) => {
       console.log(err);
       res.status(500).json({

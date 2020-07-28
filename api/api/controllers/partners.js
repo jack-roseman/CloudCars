@@ -137,7 +137,15 @@ exports.partners_patch_partner = (req, res) => {
 
 exports.partners_delete_partner = (req, res) => {
   Partner.findByIdAndDelete(req.params.id)
-    .then((result) => res.status(200).json(result))
+    .then((doc) => {
+      if (doc) {
+        res.status(200).json(doc);
+      } else {
+        res.status(404).json({
+          message: "No partners matching that ID",
+        });
+      }
+    })
     .catch((err) => {
       console.log(err);
       res.status(500).json({
