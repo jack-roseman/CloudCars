@@ -11,6 +11,10 @@ Endpoints:
 - [x] PATCH
 - [x] DELETE
 
+/vehicles/login/{id}
+
+- [ ] POST
+
 /partners
 
 - [x] GET
@@ -58,15 +62,6 @@ Endpoints:
 
 - [ ] GET
 - [ ] DELETE
-
-/users
-
-- [ ] GET
-- [ ] POST
-
-/users/login
-
-- [ ] POST
 
 General todos:
 
