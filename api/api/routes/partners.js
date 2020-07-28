@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const PartnerController = require("../controllers/partners");
+const checkAuth = require("../middleware/check-auth");
 
 // /partners/closest
 router.get("/closest", PartnerController.partners_get_closest);

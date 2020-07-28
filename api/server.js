@@ -10,6 +10,7 @@ const multer = require("multer");
 const vehicleRoutes = require("./api/routes/vehicles");
 const partnerRoutes = require("./api/routes/partners");
 const classificationRoutes = require("./api/routes/classifications");
+
 const Classification = require("./api/models/Classification.js");
 
 const app = express();

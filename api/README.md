@@ -59,10 +59,19 @@ Endpoints:
 - [ ] GET
 - [ ] DELETE
 
+/users
+
+- [ ] GET
+- [ ] POST
+
+/users/login
+
+- [ ] POST
+
 General todos:
 
 - [ ] Add authentication middleware to secure endpoints.
-- [ ] Add loginpage.html for public folder using authentication middleware and cookies to save jwt.
+- [ ] Add login for response app.
 - [ ] Add validation to schema fields.
 - [ ] Instead of return clean or dirty return a scale of clean though dirty that is defined by a criterion.
 

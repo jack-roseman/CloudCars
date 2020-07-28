@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const VehicleController = require("../controllers/vehicles");
+const checkAuth = require("../middleware/check-auth");
 
 // /vehicles
 router.get("/", VehicleController.vehicles_get_all);

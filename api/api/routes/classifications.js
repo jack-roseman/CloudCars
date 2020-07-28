@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ClassificationsController = require("../controllers/classifications");
+const checkAuth = require("../middleware/check-auth");
 
 // /classifications
 router.get("/", ClassificationsController.classifications_get_all);

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const AppointmentsController = require("../controllers/appointments");
+const checkAuth = require("../middleware/check-auth");
 
 // /appointments
 router.get("/", AppointmentsController.appointments_get_all);
