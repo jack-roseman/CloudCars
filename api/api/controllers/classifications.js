@@ -63,10 +63,10 @@ exports.classifications_delete_classification = (req, res) => {
   Classification.findByIdAndDelete(req.params.id)
     .exec()
     .then((doc) => {
-      fs.unlink(`${root}/${doc.path}`, (error) =>
-        error ? console.log(error) : null
-      );
       if (doc) {
+        fs.unlink(`${root}/${doc.path}`, (error) =>
+          error ? console.log(error) : null
+        );
         res.status(200).json(doc);
       } else {
         res.status(404).json({
