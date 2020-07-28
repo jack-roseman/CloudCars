@@ -1,8 +1,5 @@
 const mongoose = require("mongoose");
 const Partner = require("../models/Partner.js");
-const DISTANCE_MATRIX_API_KEY =
-  process.env.DISTANCE_MATRIX_API_KEY ||
-  "AIzaSyDif4wAZ9zTYnOiFb-2j1tiiCcBstghziE";
 const { Client, Status } = require("@googlemaps/google-maps-services-js");
 const client = new Client({});
 let nodeGeocoder = require("node-geocoder");
@@ -69,7 +66,7 @@ exports.partners_get_closest = async (req, res) => {
       params: {
         origins: [req.body.vehicle_lat_long],
         destinations: destinations.map((d) => d.latlong),
-        key: DISTANCE_MATRIX_API_KEY,
+        key: process.env.GOOGLE_API_KEY,
       },
       timeout: 1000,
     })
