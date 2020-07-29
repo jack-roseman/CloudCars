@@ -56,43 +56,45 @@ exports.partners_get_closest = async (req, res) => {
     .then((docs) =>
       docs.map((doc) => {
         return {
-          id: doc._id,
+          partner_id: doc._id,
           latlong: { lat: doc.address.latitude, lng: doc.address.longitude },
         };
       })
     );
-  let response = await client
-    .distancematrix({
-      params: {
-        origins: [req.body.vehicle_lat_long],
-        destinations: destinations.map((d) => d.latlong),
-        key: process.env.GOOGLE_API_KEY,
-      },
-      timeout: 1000,
-    })
-    .then((response) => {
-      if (
-        response.data &&
-        response.data.status === "OK" &&
-        response.data.rows
-      ) {
-        let closest = response.data.rows[0].elements
-          .map((d, i) => {
-            return { partnerId: destinations[i].id, dist: d };
-          })
-          .sort((a, b) => a.dist.duration.value - b.dist.duration.value)[0];
 
-        return {
-          distance: closest.dist.distance,
-          duration: closest.dist.duration,
-          book: {
-            type: "POST",
-            url: `http://${req.hostname}/api/appointments/${closest.partnerId}`,
-          },
-        };
-      }
-    });
-  res.status(200).json(response);
+  let distanceMatrixResponse = await client.distancematrix({
+    params: {
+      origins: [req.body.vehicle_lat_long],
+      destinations: destinations.map((d) => d.latlong),
+      key: process.env.GOOGLE_API_KEY,
+    },
+    timeout: 1000,
+  });
+
+  let closest = distanceMatrixResponse.data.rows[0].elements
+    .map((matrixElement, i) => {
+      return {
+        partner_id: destinations[i].partner_id,
+        distanceInfo: matrixElement,
+      };
+    })
+    .sort(
+      (a, b) => a.distanceInfo.duration.value - b.distanceInfo.duration.value
+    )[0];
+
+  res.status(200).json({
+    distance: closest.distanceInfo.distance,
+    duration: closest.distanceInfo.duration,
+    book: {
+      type: "POST",
+      url: `http://${req.hostname}/api/appointments/book`,
+      body: {
+        partner_id: closest.partner_id,
+        vehicle_id: req.body.vehicle_id,
+        classification: req.body.classification,
+      },
+    },
+  });
 };
 
 exports.partners_add_partner = async (req, res) => {

@@ -4,7 +4,7 @@ const VehicleController = require("../controllers/vehicles");
 const checkAuth = require("../middleware/check-auth");
 
 // /vehicles
-router.get("/", VehicleController.vehicles_get_all);
+router.get("/all", VehicleController.vehicles_get_all);
 router.post("/", VehicleController.vehicles_add_vehicle);
 
 // /vehicles/:id

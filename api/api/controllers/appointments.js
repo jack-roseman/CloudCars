@@ -40,3 +40,20 @@ exports.appointments_get_appointment = (req, res) => {
       });
     });
 };
+
+exports.appointments_add_appointment = (req, res) => {
+  new Appointment({
+    _id: new mongoose.Types.ObjectId(),
+    partner_id: req.body.partner_id,
+    vehicle_id: req.body.vehicle_id,
+    classification: req.body.classification,
+  })
+    .save()
+    .then((result) => res.status(201).json(result))
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({
+        error: err,
+      });
+    });
+};

@@ -27,6 +27,7 @@ Endpoints:
 - [x] Use Distance Matrix API to compute travel time from cars current address to partner
 - [x] Implement partners_get_closest in ./api/controllers/partners to return closest partner
 - [ ] Make it so that the search is limited to the serviceTypes
+- [ ] Return multiple options and make sure there are all available
 
 /partners/{id}
 
@@ -37,6 +38,7 @@ Endpoints:
 /partners/{id}/appointments
 
 - [ ] GET
+- [ ] POST
 
 /classifications
 
@@ -56,11 +58,18 @@ Endpoints:
 /appointments
 
 - [x] Add Appointment schema as a model
-- [ ] GET
+- [x] GET -> returns all appointments
+
+/appointments/book
+
+- [x] POST -> add a new appointment between partner a partner and a vehicle
+  - [ ] validate partner_id in body to ensure partner exists
+  - [ ] validate vehicle_id in body to ensure it is valid
 
 /appointments/{id}
 
-- [ ] GET
+- [ ] GET -> returns an appointment given its id
+- [ ] PATCH
 - [ ] DELETE
 
 General todos:

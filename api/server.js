@@ -10,6 +10,7 @@ const multer = require("multer");
 const vehicleRoutes = require("./api/routes/vehicles");
 const partnerRoutes = require("./api/routes/partners");
 const classificationRoutes = require("./api/routes/classifications");
+const appointmentRoutes = require("./api/routes/appointments");
 
 const Classification = require("./api/models/Classification.js");
 
@@ -97,6 +98,7 @@ app.use((req, res, next) => {
 app.use("/api/vehicles", vehicleRoutes);
 app.use("/api/partners", partnerRoutes);
 app.use("/api/classifications", classificationRoutes);
+app.use("/api/appointments", appointmentRoutes);
 app.post("/api/classify", upload.single("data"), (req, res) => {
   if (getNumResponders() > 0 && socket) {
     addClassificationTask(req.file.path);
@@ -104,6 +106,7 @@ app.post("/api/classify", upload.single("data"), (req, res) => {
     socket.on("classification_completion", (task) => {
       new Classification({
         _id: req.file.filename.split(".")[0],
+        vehicle_id: req.body.vehicle_id,
         path: req.file.path,
         classification: task.label, //clean or dirty
       }).save();
@@ -112,20 +115,19 @@ app.post("/api/classify", upload.single("data"), (req, res) => {
 
       res.status(200).json({
         classification: task.label,
-        request:
-          task.label === "clean"
-            ? undefined
-            : {
-                type: "POST",
-                url: `http://${req.hostname}/api/partners/closest`,
-                body: {
-                  service_type: "interior cleaning",
-                  vehicle_lat_long: {
-                    lat: req.body.lat,
-                    long: req.body.long,
-                  },
-                },
-              },
+        request: {
+          type: "POST",
+          url: `http://${req.hostname}/api/partners/closest`,
+          body: {
+            service_type: "interior cleaning",
+            vehicle_id: req.body.vehicle_id,
+            classification: task.label,
+            vehicle_lat_long: {
+              lat: req.body.lat,
+              lng: req.body.long,
+            },
+          },
+        },
       });
     });
   } else {
