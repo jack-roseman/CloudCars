@@ -58,7 +58,7 @@ const upload = multer({
 });
 
 const PORT = process.env.PORT || 3000;
-const MONGO_URI = mongoose.set("useFindAndModify", false);
+
 mongoose.connect(process.env.MONGOLAB_PINK_URI, {
   useUnifiedTopology: true,
   useNewUrlParser: true,
@@ -122,9 +122,9 @@ app.post("/api/classify", upload.single("data"), (req, res) => {
             service_type: "interior cleaning",
             vehicle_id: req.body.vehicle_id,
             classification: task.label,
-            vehicle_lat_long: {
+            vehicle_lat_lng: {
               lat: req.body.lat,
-              lng: req.body.long,
+              lng: req.body.lng,
             },
           },
         },

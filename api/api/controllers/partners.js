@@ -51,12 +51,12 @@ exports.partners_get_partner = (req, res) => {
 exports.partners_get_closest = async (req, res) => {
   let serviceType = req.body.service_type;
   let destinations = await Partner.find()
-    .select("address.latitude address.longitude")
+    .select("address.latitude address.longitude address.formattedAddress")
     .exec()
     .then((docs) =>
       docs.map((doc) => {
         return {
-          partner_id: doc._id,
+          partner: doc,
           latlong: { lat: doc.address.latitude, lng: doc.address.longitude },
         };
       })
@@ -64,7 +64,7 @@ exports.partners_get_closest = async (req, res) => {
 
   let distanceMatrixResponse = await client.distancematrix({
     params: {
-      origins: [req.body.vehicle_lat_long],
+      origins: [req.body.vehicle_lat_lng],
       destinations: destinations.map((d) => d.latlong),
       key: process.env.GOOGLE_API_KEY,
     },
@@ -74,24 +74,25 @@ exports.partners_get_closest = async (req, res) => {
   let closest = distanceMatrixResponse.data.rows[0].elements
     .map((matrixElement, i) => {
       return {
-        partner_id: destinations[i].partner_id,
+        partner: destinations[i].partner,
         distanceInfo: matrixElement,
       };
     })
     .sort(
       (a, b) => a.distanceInfo.duration.value - b.distanceInfo.duration.value
     )[0];
-
+  console.log(closest);
   res.status(200).json({
-    distance: closest.distanceInfo.distance,
-    duration: closest.distanceInfo.duration,
-    book: {
-      type: "POST",
-      url: `http://${req.hostname}/api/appointments/book`,
-      body: {
-        partner_id: closest.partner_id,
-        vehicle_id: req.body.vehicle_id,
-        classification: req.body.classification,
+    ...closest,
+    options: {
+      book: {
+        type: "POST",
+        url: `http://${req.hostname}/api/appointments/book`,
+        body: {
+          partner_id: closest.partner._id,
+          vehicle_id: req.body.vehicle_id,
+          classification: req.body.classification,
+        },
       },
     },
   });

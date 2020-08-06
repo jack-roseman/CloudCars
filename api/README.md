@@ -15,6 +15,10 @@ Endpoints:
 
 - [ ] POST
 
+/vehicles/register
+
+- [ ] POST
+
 /partners
 
 - [x] GET
@@ -26,7 +30,7 @@ Endpoints:
 
 - [x] Use Distance Matrix API to compute travel time from cars current address to partner
 - [x] Implement partners_get_closest in ./api/controllers/partners to return closest partner
-- [ ] Make it so that the search is limited to the serviceTypes
+- [ ] Make it so that the search is limited to the serviceTypes and partners availability
 - [ ] Return multiple options and make sure there are all available
 
 /partners/{id}
