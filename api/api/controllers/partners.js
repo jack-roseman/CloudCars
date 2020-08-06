@@ -50,22 +50,18 @@ exports.partners_get_partner = (req, res) => {
 
 exports.partners_get_closest = async (req, res) => {
   let serviceType = req.body.service_type;
-  let destinations = await Partner.find()
-    .select("address.latitude address.longitude address.formattedAddress")
-    .exec()
-    .then((docs) =>
-      docs.map((doc) => {
-        return {
-          partner: doc,
-          latlong: { lat: doc.address.latitude, lng: doc.address.longitude },
-        };
-      })
-    );
+  let destinations = await Partner.find // .select("address.latitude address.longitude address.formattedAddress")
+    .exec();
 
   let distanceMatrixResponse = await client.distancematrix({
     params: {
       origins: [req.body.vehicle_lat_lng],
-      destinations: destinations.map((d) => d.latlong),
+      destinations: destinations.map((partner) => {
+        return {
+          lat: partner.address.latitude,
+          lng: partner.address.longitude,
+        };
+      }),
       key: process.env.GOOGLE_API_KEY,
     },
     timeout: 1000,
@@ -74,28 +70,31 @@ exports.partners_get_closest = async (req, res) => {
   let closest = distanceMatrixResponse.data.rows[0].elements
     .map((matrixElement, i) => {
       return {
-        partner: destinations[i].partner,
-        distanceInfo: matrixElement,
+        partner_id: destinations[i]._id,
+        partner_address: destinations[i].address,
+        travel_info: {
+          drive_time_seconds: matrixElement.duration.value,
+          drive_distance_meters: matrixElement.distance.value,
+        },
+        options: {
+          book: {
+            type: "POST",
+            url: `http://${req.hostname}/api/appointments/book`,
+            body: {
+              partner_id: destinations[i]._id,
+              vehicle_id: req.body.vehicle_id,
+              classification: req.body.classification,
+            },
+          },
+        },
       };
     })
     .sort(
       (a, b) => a.distanceInfo.duration.value - b.distanceInfo.duration.value
-    )[0];
+    );
   console.log(closest);
-  res.status(200).json({
-    ...closest,
-    options: {
-      book: {
-        type: "POST",
-        url: `http://${req.hostname}/api/appointments/book`,
-        body: {
-          partner_id: closest.partner._id,
-          vehicle_id: req.body.vehicle_id,
-          classification: req.body.classification,
-        },
-      },
-    },
-  });
+
+  res.status(200).json(closest);
 };
 
 exports.partners_add_partner = async (req, res) => {
