@@ -82,7 +82,4 @@ General todos:
 - [ ] Add login for response app.
 - [ ] Add validation to schema fields.
 - [ ] Instead of return clean or dirty return a scale of clean though dirty that is defined by a criterion.
-
-Questions:
-
-- How will self-driving cars communicate to the network?
+- [ ] Write tests for each endpoint

@@ -5,7 +5,6 @@ const morgan = require("morgan");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const fs = require("fs");
-var os = require("os");
 const multer = require("multer");
 const vehicleRoutes = require("./api/routes/vehicles");
 const partnerRoutes = require("./api/routes/partners");
@@ -58,24 +57,6 @@ const upload = multer({
 });
 
 const PORT = process.env.PORT || 3000;
-
-mongoose.connect(process.env.MONGOLAB_PINK_URI, {
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-});
-
-mongoose.connection.on("connected", function () {
-  console.log("Mongoose default connection is open");
-});
-
-process.on("SIGINT", function () {
-  mongoose.connection.close(function () {
-    console.log(
-      "Mongoose default connection is disconnected due to application termination"
-    );
-    process.exit(0);
-  });
-});
 
 app.set("view engine", "ejs");
 app.use(morgan("dev"));
@@ -178,4 +159,20 @@ io.on("connection", (s) => {
   });
 });
 
-server.listen(PORT);
+server.listen(PORT, () => {
+  mongoose.connect(process.env.MONGOLAB_PINK_URI, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+  });
+});
+
+mongoose.connection.on("connected", function () {
+  console.log("Mongoose default connection is open");
+});
+
+process.on("SIGINT", function () {
+  mongoose.connection.close(() => {
+    console.log("Mongoose default connection is disconnected due to SIGINT");
+    process.exit(0);
+  });
+});

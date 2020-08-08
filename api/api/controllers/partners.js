@@ -50,7 +50,8 @@ exports.partners_get_partner = (req, res) => {
 
 exports.partners_get_closest = async (req, res) => {
   let serviceType = req.body.service_type;
-  let destinations = await Partner.find // .select("address.latitude address.longitude address.formattedAddress")
+  let destinations = await Partner.find
+    // .select("address.latitude address.longitude address.formattedAddress")
     .exec();
 
   let distanceMatrixResponse = await client.distancematrix({
@@ -90,7 +91,8 @@ exports.partners_get_closest = async (req, res) => {
       };
     })
     .sort(
-      (a, b) => a.distanceInfo.duration.value - b.distanceInfo.duration.value
+      (a, b) =>
+        a.travel_info.drive_time_seconds - b.travel_info.drive_time_seconds
     );
   console.log(closest);
 
