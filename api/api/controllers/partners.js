@@ -50,55 +50,58 @@ exports.partners_get_partner = (req, res) => {
     });
 };
 
-exports.partners_get_closest = async (req, res) => {
+exports.partners_get_closest = async (req, res, next) => {
   let serviceType = req.body.service_type;
+  let vehicle_id = req.body.vehicle_id;
+  let vehicle_loc = req.body.vehicle_lat_lng;
   let destinations = await Partner.find()
     .select("address.latitude address.longitude address.formattedAddress")
     .exec();
+  if (!destinations.length) {
+    res.send([]);
+  } else {
+    let distanceMatrixResponse = await client.distancematrix({
+      params: {
+        origins: [vehicle_loc],
+        destinations: destinations.map((partner) => {
+          return {
+            lat: partner.address.latitude,
+            lng: partner.address.longitude,
+          };
+        }),
+        key: process.env.GOOGLE_API_KEY,
+      },
+      timeout: 1000,
+    });
 
-  let distanceMatrixResponse = await client.distancematrix({
-    params: {
-      origins: [req.body.vehicle_lat_lng],
-      destinations: destinations.map((partner) => {
+    let closest = distanceMatrixResponse.data.rows[0].elements
+      .map((matrixElement, i) => {
         return {
-          lat: partner.address.latitude,
-          lng: partner.address.longitude,
-        };
-      }),
-      key: process.env.GOOGLE_API_KEY,
-    },
-    timeout: 1000,
-  });
-
-  let closest = distanceMatrixResponse.data.rows[0].elements
-    .map((matrixElement, i) => {
-      return {
-        partner_id: destinations[i]._id,
-        partner_address: destinations[i].address,
-        travel_info: {
-          drive_time_seconds: matrixElement.duration.value,
-          drive_distance_meters: matrixElement.distance.value,
-        },
-        options: {
-          book: {
-            type: "POST",
-            url: `http://${req.hostname}/api/appointments/book`,
-            body: {
-              partner_id: destinations[i]._id,
-              vehicle_id: req.body.vehicle_id,
-              classification: req.body.classification,
+          partner_id: destinations[i]._id,
+          partner_address: destinations[i].address,
+          travel_info: {
+            drive_time_seconds: matrixElement.duration.value,
+            drive_distance_meters: matrixElement.distance.value,
+          },
+          options: {
+            book: {
+              type: "POST",
+              url: `http://${req.hostname}/api/appointments/book`,
+              body: {
+                partner_id: destinations[i]._id,
+                vehicle_id: vehicle_id,
+                classification: req.body.classification,
+              },
             },
           },
-        },
-      };
-    })
-    .sort(
-      (a, b) =>
-        a.travel_info.drive_time_seconds - b.travel_info.drive_time_seconds
-    );
-  console.log(closest);
-
-  res.status(200).json(closest);
+        };
+      })
+      .sort(
+        (a, b) =>
+          a.travel_info.drive_time_seconds - b.travel_info.drive_time_seconds
+      );
+    res.status(200).json(closest);
+  }
 };
 
 exports.partners_add_partner = async (req, res) => {
