@@ -14,6 +14,7 @@ const appointmentRoutes = require("./api/routes/appointments");
 const Classification = require("./api/models/Classification.js");
 
 const app = express();
+
 const server = http.createServer(app);
 const io = require("socket.io")(server);
 var socket;
@@ -59,7 +60,7 @@ const upload = multer({
 const PORT = process.env.PORT || 3000;
 
 app.set("view engine", "ejs");
-app.use(morgan("dev"));
+// app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use((req, res, next) => {
@@ -159,15 +160,6 @@ io.on("connection", (s) => {
   });
 });
 
-server.listen(PORT, () => {
-  mongoose.connect(process.env.MONGOLAB_PINK_URI, {
-    useUnifiedTopology: true,
-    useNewUrlParser: true,
-  });
-});
-
-//event listeners
-
 mongoose.connection.on("connected", function () {
   console.log("Mongoose default connection is open");
 });
@@ -178,3 +170,10 @@ process.on("SIGINT", function () {
     process.exit(0);
   });
 });
+
+mongoose.connect(process.env.MONGOLAB_PINK_URI, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true,
+});
+//start server
+module.exports = server.listen(PORT);

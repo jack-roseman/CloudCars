@@ -10,6 +10,7 @@ let geoCoder = nodeGeocoder({
 
 exports.partners_get_all = (req, res) => {
   Partner.find()
+    .select("name address.formattedAddress serviceTypes ")
     .exec()
     .then((docs) => {
       if (docs) {
@@ -30,6 +31,7 @@ exports.partners_get_all = (req, res) => {
 
 exports.partners_get_partner = (req, res) => {
   Partner.findById(req.params.id)
+    .select("name address.formattedAddress serviceTypes ")
     .exec()
     .then((doc) => {
       if (doc) {
