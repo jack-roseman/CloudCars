@@ -166,6 +166,8 @@ server.listen(PORT, () => {
   });
 });
 
+//event listeners
+
 mongoose.connection.on("connected", function () {
   console.log("Mongoose default connection is open");
 });
